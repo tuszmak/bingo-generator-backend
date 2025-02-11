@@ -11,12 +11,18 @@ importers:
       '@hono/node-server':
         specifier: ^1.13.8
         version: 1.13.8(hono@4.7.0)
+      dotenv-flow:
+        specifier: ^4.1.0
+        version: 4.1.0
       hono:
         specifier: ^4.6.20
         version: 4.7.0
+      postgres:
+        specifier: ^3.4.5
+        version: 3.4.5
     devDependencies:
       '@types/node':
-        specifier: ^20.11.17
+        specifier: ^20.17.17
         version: 20.17.17
       tsx:
         specifier: ^4.7.1
@@ -177,6 +183,14 @@ packages:
   '@types/node@20.17.17':
     resolution: {integrity: sha512-/WndGO4kIfMicEQLTi/mDANUu/iVUhT7KboZPdEqqHQ4aTS+3qT3U5gIqWDFV+XouorjfgGqvKILJeHhuQgFYg==}
 
+  dotenv-flow@4.1.0:
+    resolution: {integrity: sha512-0cwP9jpQBQfyHwvE0cRhraZMkdV45TQedA8AAUZMsFzvmLcQyc1HPv+oX0OOYwLFjIlvgVepQ+WuQHbqDaHJZg==}
+    engines: {node: '>= 12.0.0'}
+
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
+
   esbuild@0.23.1:
     resolution: {integrity: sha512-VVNz/9Sa0bs5SELtn3f7qhJCDPCF5oMEl5cO9/SSinpE9hbPVvxbd572HH5AKiP7WD8INO53GgfDDhRjkylHEg==}
     engines: {node: '>=18'}
@@ -193,6 +207,10 @@ packages:
   hono@4.7.0:
     resolution: {integrity: sha512-hV97aIR4WYbG30k234sD9B3VNr1ZWdQRmrVF76LKFlmI7O9Yo70mG9+mFwyQ6Sjrz4wH71GfnBxv6CPjcx3QNw==}
     engines: {node: '>=16.9.0'}
+
+  postgres@3.4.5:
+    resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
+    engines: {node: '>=12'}
 
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
@@ -287,6 +305,12 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
+  dotenv-flow@4.1.0:
+    dependencies:
+      dotenv: 16.4.7
+
+  dotenv@16.4.7: {}
+
   esbuild@0.23.1:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.23.1
@@ -322,6 +346,8 @@ snapshots:
       resolve-pkg-maps: 1.0.0
 
   hono@4.7.0: {}
+
+  postgres@3.4.5: {}
 
   resolve-pkg-maps@1.0.0: {}
 
