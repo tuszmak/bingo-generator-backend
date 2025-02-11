@@ -4,10 +4,10 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type Table = {
-  id: Generated<number>;
-  content: string;
+export type Bingo_table = {
+    id: Generated<number>;
+    content: string;
 };
 export type DB = {
-  Table: Table;
+    Bingo_table: Bingo_table;
 };

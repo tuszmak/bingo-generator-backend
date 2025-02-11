@@ -20,7 +20,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Table {
+model Bingo_table {
   id      Int    @id @default(autoincrement())
   content String
 }

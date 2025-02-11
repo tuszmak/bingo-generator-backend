@@ -1,40 +1,29 @@
 import { serve } from "@hono/node-server";
 import dotenvFlow from "dotenv-flow";
 import { Hono } from "hono";
-import { PostgresDialect } from "kysely";
-import pg from "pg";
-const { Pool } = pg;
+import { createTable, findTableById } from "./repository/TableRepository.js";
 
 dotenvFlow.config();
 const app = new Hono();
 
-const dialect = new PostgresDialect({
-  pool: new Pool({
-    host: process.env.POSTGRES_HOST,
-    port: 5432,
-    user: process.env.POSTGRES_USERNAME,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DATABASE,
-  }),
-});
-
-app.get("/api/", (c) => {
-  return c.text("Hello Hono!");
-});
-
-app.get("/api/table/:id", (c) => {
-  //TODO get specific table from DB.
-  console.log(c.req.param("id"));
-  return c.text("foo");
+app.get("/api/table/:id", async (c) => {
+  const id = c.req.param("id");
+  const idAsNumber = parseInt(id);
+  if (idAsNumber) {
+    const table = await findTableById(idAsNumber);
+    if (table) {
+      return c.body(JSON.stringify(table));
+    } else {
+      return c.notFound();
+    }
+  }
 });
 
 app.post("api/table", async (c) => {
   const requestData = await c.req.json();
-  console.log(requestData);
-
-  // requestData.
-  // createTable(content);
-  return c.text("foo");
+  const newTable = createTable(requestData);
+  c.status(201);
+  return c.text(`Finished with id ${(await newTable).id}`);
 });
 
 const port = 3000;

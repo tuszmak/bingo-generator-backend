@@ -1,7 +1,8 @@
 import DotenvFlow from "dotenv-flow";
 import { Kysely, PostgresDialect } from "kysely";
-import { Pool } from "pg";
+import pg from "pg";
 import type { DB } from "./db/types.js";
+const { Pool } = pg;
 
 DotenvFlow.config();
 
