@@ -6,12 +6,18 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.8",
+    "@prisma/client": "6.3.1",
     "dotenv-flow": "^4.1.0",
     "hono": "^4.6.20",
-    "postgres": "^3.4.5"
+    "kysely": "^0.27.5",
+    "pg": "^8.13.1",
+    "prisma-kysely": "^1.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.17",
+    "@types/pg": "^8.11.11",
+    "init": "^0.1.2",
+    "prisma": "^6.3.1",
     "tsx": "^4.7.1"
   }
 }
