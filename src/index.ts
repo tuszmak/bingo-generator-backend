@@ -2,6 +2,7 @@ import { serve } from "@hono/node-server";
 import dotenvFlow from "dotenv-flow";
 import { Hono } from "hono";
 import { createTable, findTableById } from "./repository/TableRepository.js";
+import type { TableDAO } from "./types/table.js";
 
 dotenvFlow.config();
 const app = new Hono();
@@ -20,10 +21,10 @@ app.get("/api/table/:id", async (c) => {
 });
 
 app.post("api/table", async (c) => {
-  const requestData = await c.req.json();
-  const newTable = createTable(requestData);
+  const requestData: string = await c.req.json();
+  const newTable: TableDAO = await createTable(requestData);
   c.status(201);
-  return c.text(`Finished with id ${(await newTable).id}`);
+  return c.text(`Finished with id ${newTable.id}`);
 });
 
 const port = 3000;

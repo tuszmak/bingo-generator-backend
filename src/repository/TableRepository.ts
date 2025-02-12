@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { db } from "../database.js";
 
 export async function findTableById(id: number) {
@@ -11,7 +12,7 @@ export async function findTableById(id: number) {
 export async function createTable(content: string) {
   return await db
     .insertInto("Bingo_table")
-    .values({ content })
+    .values({ content: content, code: randomUUID() })
     .returningAll()
     .executeTakeFirstOrThrow();
 }
