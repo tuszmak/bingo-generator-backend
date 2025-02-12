@@ -7,6 +7,7 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 export type Bingo_table = {
     id: Generated<number>;
     code: string;
+    name: Generated<string>;
     content: string;
 };
 export type DB = {

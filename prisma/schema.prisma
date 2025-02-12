@@ -23,5 +23,6 @@ datasource db {
 model Bingo_table {
   id      Int    @id @default(autoincrement())
   code    String @unique @default(uuid())
+  name    String @default("A cool table!")
   content String
 }

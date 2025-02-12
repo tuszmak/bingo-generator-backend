@@ -9,10 +9,10 @@ export async function findTableById(id: number) {
     .executeTakeFirst();
 }
 
-export async function createTable(content: string) {
+export async function createTable(content: string, name: string) {
   return await db
     .insertInto("Bingo_table")
-    .values({ content: content, code: randomUUID() })
+    .values({ content: content, code: randomUUID(), name: name })
     .returningAll()
     .executeTakeFirstOrThrow();
 }
