@@ -1,10 +1,10 @@
 import { randomUUID } from "crypto";
 import { db } from "../database.js";
 
-export async function findTableById(id: number) {
+export async function findTableById(id: string) {
   return await db
     .selectFrom("Bingo_table")
-    .where("id", "=", id)
+    .where("code", "=", id)
     .selectAll()
     .executeTakeFirst();
 }

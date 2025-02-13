@@ -9,9 +9,8 @@ const app = new Hono();
 
 app.get("/api/table/:id", async (c) => {
   const id = c.req.param("id");
-  const idAsNumber = parseInt(id);
-  if (idAsNumber) {
-    const table = await findTableById(idAsNumber);
+  if (id) {
+    const table = await findTableById(id);
     if (table) {
       return c.body(JSON.stringify(table));
     } else {
