@@ -2,12 +2,9 @@ import { serve } from "@hono/node-server";
 import { zValidator } from "@hono/zod-validator";
 import dotenvFlow from "dotenv-flow";
 import { Hono } from "hono";
+import type { ZodType } from "zod";
 import { createTable, findTableById } from "./repository/TableRepository.js";
-import {
-  TableReqSchema,
-  type NewBingoTable,
-  type Table,
-} from "./types/table.js";
+import { TableReqSchema, type Table } from "./types/table.js";
 
 dotenvFlow.config();
 const app = new Hono();
@@ -24,17 +21,20 @@ app.get("/api/table/:id", async (c) => {
   }
 });
 
-app.post(
-  "api/table",
-  zValidator("json", TableReqSchema, (result, c) => {
+const defaultJsonValidatorFactory = <T extends ZodType>(schema: T) =>
+  zValidator("json", schema, (result, c) => {
     if (!result.success) {
       c.text("Invalid data!", 400);
     }
-  }),
+  });
+
+app.post(
+  "api/table",
+  defaultJsonValidatorFactory(TableReqSchema),
   async (c) => {
     const req = c.req.valid("json");
     const { content, name }: Table = req;
-    const newTable: NewBingoTable = await createTable(content, name);
+    const newTable = await createTable(content, name);
     c.status(201);
     return c.text(`Finished with id ${newTable.id}`);
   }
