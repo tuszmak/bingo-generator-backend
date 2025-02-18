@@ -3,7 +3,7 @@ import { db } from "../database.js";
 
 export async function findTableById(id: string) {
   return await db
-    .selectFrom("Bingo_table")
+    .selectFrom("BingoTable")
     .where("code", "=", id)
     .selectAll()
     .executeTakeFirst();
@@ -11,7 +11,7 @@ export async function findTableById(id: string) {
 
 export async function createTable(content: string, name: string) {
   return await db
-    .insertInto("Bingo_table")
+    .insertInto("BingoTable")
     .values({ content: content, code: randomUUID(), name: name })
     .returningAll()
     .executeTakeFirstOrThrow();

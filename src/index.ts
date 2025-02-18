@@ -3,7 +3,11 @@ import { zValidator } from "@hono/zod-validator";
 import dotenvFlow from "dotenv-flow";
 import { Hono } from "hono";
 import { createTable, findTableById } from "./repository/TableRepository.js";
-import { TableReqSchema, type Table, type TableDAO } from "./types/table.js";
+import {
+  TableReqSchema,
+  type NewBingoTable,
+  type Table,
+} from "./types/table.js";
 
 dotenvFlow.config();
 const app = new Hono();
@@ -30,7 +34,7 @@ app.post(
   async (c) => {
     const req = c.req.valid("json");
     const { content, name }: Table = req;
-    const newTable: TableDAO = await createTable(content, name);
+    const newTable: NewBingoTable = await createTable(content, name);
     c.status(201);
     return c.text(`Finished with id ${newTable.id}`);
   }
