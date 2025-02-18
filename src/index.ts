@@ -1,8 +1,9 @@
 import { serve } from "@hono/node-server";
+import { zValidator } from "@hono/zod-validator";
 import dotenvFlow from "dotenv-flow";
 import { Hono } from "hono";
 import { createTable, findTableById } from "./repository/TableRepository.js";
-import type { Table, TableDAO } from "./types/table.js";
+import { TableReqSchema, type Table, type TableDAO } from "./types/table.js";
 
 dotenvFlow.config();
 const app = new Hono();
@@ -19,12 +20,21 @@ app.get("/api/table/:id", async (c) => {
   }
 });
 
-app.post("api/table", async (c) => {
-  const { content, name }: Table = await c.req.json();
-  const newTable: TableDAO = await createTable(content, name);
-  c.status(201);
-  return c.text(`Finished with id ${newTable.id}`);
-});
+app.post(
+  "api/table",
+  zValidator("json", TableReqSchema, (result, c) => {
+    if (!result.success) {
+      c.text("Invalid data!", 400);
+    }
+  }),
+  async (c) => {
+    const req = c.req.valid("json");
+    const { content, name }: Table = req;
+    const newTable: TableDAO = await createTable(content, name);
+    c.status(201);
+    return c.text(`Finished with id ${newTable.id}`);
+  }
+);
 
 const port = 3000;
 console.log(`Server is running on http://localhost:${port}`);
