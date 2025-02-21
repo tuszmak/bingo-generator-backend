@@ -16,3 +16,7 @@ export async function createTable(content: string, name: string) {
     .returningAll()
     .executeTakeFirstOrThrow();
 }
+
+export async function getAllTables() {
+  return await db.selectFrom("BingoTable").selectAll().execute();
+}
