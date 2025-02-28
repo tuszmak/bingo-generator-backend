@@ -22,7 +22,7 @@ tables.get("/:id", async (c) => {
   if (id) {
     const table = await findTableById(id);
     if (table) {
-      return c.body(JSON.stringify({ ...table }));
+      return c.body(JSON.stringify(table));
     } else {
       return c.notFound();
     }
