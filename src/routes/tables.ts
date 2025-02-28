@@ -1,7 +1,6 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import type { ZodType } from "zod";
-import { getPackDetails } from "../repository/PackDetailRepository.js";
 import {
   createTable,
   findTableById,
@@ -22,9 +21,8 @@ tables.get("/:id", async (c) => {
   const id = c.req.param("id");
   if (id) {
     const table = await findTableById(id);
-    const details = await getPackDetails(id);
     if (table) {
-      return c.body(JSON.stringify({ ...table, details }));
+      return c.body(JSON.stringify({ ...table }));
     } else {
       return c.notFound();
     }

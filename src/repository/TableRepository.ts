@@ -6,6 +6,7 @@ export async function findTableById(id: string) {
     .selectFrom("BingoTable")
     .where("code", "=", id)
     .selectAll()
+    .fullJoin("PackDetails", "BingoTable.id", "PackDetails.id")
     .executeTakeFirst();
 }
 
