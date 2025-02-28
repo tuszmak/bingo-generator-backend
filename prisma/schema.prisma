@@ -21,8 +21,17 @@ datasource db {
 }
 
 model BingoTable {
-  id      Int    @id @default(autoincrement())
-  code    String @unique @default(uuid())
-  name    String @default("A cool table!")
-  content String
+  id          Int          @id @default(autoincrement())
+  code        String       @unique @default(uuid())
+  name        String       @default("A cool table!")
+  content     String
+  packDetails PackDetails?
+}
+
+model PackDetails {
+  likeCount  Int        @default(0)
+  createdBy  String     @default("Foobar")
+  createdAt  DateTime   @default(now())
+  bingoTable BingoTable @relation(fields: [id], references: [id])
+  id         Int        @id @unique
 }

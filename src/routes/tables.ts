@@ -38,8 +38,8 @@ const defaultJsonValidatorFactory = <T extends ZodType>(schema: T) =>
 
 tables.post("/", defaultJsonValidatorFactory(TableReqSchema), async (c) => {
   const req = c.req.valid("json");
-  const { content, name }: Table = req;
-  const newTable = await createTable(content, name);
+  const { content, name, userName }: Table = req;
+  const newTable = await createTable(content, name, userName);
   c.status(201);
   return c.text(`Finished with id ${newTable.id}`);
 });
