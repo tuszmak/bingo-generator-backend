@@ -32,6 +32,6 @@ model PackDetails {
   likeCount  Int        @default(0)
   createdBy  String     @default("Foobar")
   createdAt  DateTime   @default(now())
-  BingoTable BingoTable @relation(fields: [id], references: [id])
+  bingoTable BingoTable @relation(fields: [id], references: [id])
   id         Int        @id @unique
 }
