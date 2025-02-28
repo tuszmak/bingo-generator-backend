@@ -9,14 +9,28 @@ export async function findTableById(id: string) {
     .executeTakeFirst();
 }
 
-export async function createTable(content: string, name: string) {
-  return await db
+export async function createTable(
+  content: string,
+  name: string,
+  userName?: string
+) {
+  const table = await db
     .insertInto("BingoTable")
     .values({ content: content, code: randomUUID(), name: name })
     .returningAll()
     .executeTakeFirstOrThrow();
+  const details = await db
+    .insertInto("PackDetails")
+    .values({ id: table.id, createdBy: userName })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+  return { ...table, details };
 }
 
 export async function getAllTables() {
-  return await db.selectFrom("BingoTable").selectAll().execute();
+  return await db
+    .selectFrom("BingoTable")
+    .selectAll()
+    .fullJoin("PackDetails", "BingoTable.id", "PackDetails.id")
+    .execute();
 }

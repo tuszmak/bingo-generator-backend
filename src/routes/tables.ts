@@ -1,6 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import type { ZodType } from "zod";
+import { getPackDetails } from "../repository/PackDetailRepository.js";
 import {
   createTable,
   findTableById,
@@ -21,8 +22,9 @@ tables.get("/:id", async (c) => {
   const id = c.req.param("id");
   if (id) {
     const table = await findTableById(id);
+    const details = await getPackDetails(id);
     if (table) {
-      return c.body(JSON.stringify(table));
+      return c.body(JSON.stringify({ ...table, details }));
     } else {
       return c.notFound();
     }
@@ -38,8 +40,8 @@ const defaultJsonValidatorFactory = <T extends ZodType>(schema: T) =>
 
 tables.post("/", defaultJsonValidatorFactory(TableReqSchema), async (c) => {
   const req = c.req.valid("json");
-  const { content, name }: Table = req;
-  const newTable = await createTable(content, name);
+  const { content, name, userName }: Table = req;
+  const newTable = await createTable(content, name, userName);
   c.status(201);
   return c.text(`Finished with id ${newTable.id}`);
 });

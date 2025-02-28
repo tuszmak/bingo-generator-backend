@@ -3,6 +3,7 @@ import { z } from "zod";
 export interface Table {
   content: string;
   name: string;
+  userName?: string;
 }
 
 //Potential extension of the table. Export when applicable.
