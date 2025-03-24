@@ -21,29 +21,19 @@ datasource db {
 }
 
 model BingoTable {
-  id           Int            @id @default(autoincrement())
-  code         String         @unique @default(uuid())
-  name         String         @default("A cool table!")
+  id           Int           @id @default(autoincrement())
+  code         String        @unique @default(uuid())
+  name         String        @default("A cool table!")
   content      String
-  packDetails  PackDetails?
-  TableDetails TableDetails[]
-}
-
-model PackDetails {
-  likeCount    Int            @default(0)
-  createdBy    String         @default("Foobar")
-  createdAt    DateTime       @default(now())
-  bingoTable   BingoTable     @relation(fields: [id], references: [id])
-  id           Int            @id @unique
-  tableDetails TableDetails[]
+  TableDetails TableDetails?
 }
 
 model TableDetails {
-  table         BingoTable   @relation(fields: [bingoTableId], references: [id])
-  detailsId     Int          @id @default(autoincrement())
-  bingoTableId  Int
+  table         BingoTable @relation(fields: [bingoTableId], references: [id])
+  detailsId     Int        @id @default(autoincrement())
+  bingoTableId  Int        @unique
   uploadedBy    String
   likes         String[]
-  PackDetails   PackDetails? @relation(fields: [packDetailsId], references: [id])
+  createdAt     DateTime   @default(now())
   packDetailsId Int?
 }
