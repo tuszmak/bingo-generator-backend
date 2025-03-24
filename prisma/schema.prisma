@@ -25,13 +25,25 @@ model BingoTable {
   code         String         @unique @default(uuid())
   name         String         @default("A cool table!")
   content      String
+  packDetails  PackDetails?
+  TableDetails TableDetails[]
+}
+
+model PackDetails {
+  likeCount    Int            @default(0)
+  createdBy    String         @default("Foobar")
+  createdAt    DateTime       @default(now())
+  bingoTable   BingoTable     @relation(fields: [id], references: [id])
+  id           Int            @id @unique
   tableDetails TableDetails[]
 }
 
 model TableDetails {
-  table        BingoTable @relation(fields: [bingoTableId], references: [id])
-  detailsId    Int        @id @default(autoincrement())
-  bingoTableId Int
-  uploadedBy   String
-  likes        String[]
+  table         BingoTable   @relation(fields: [bingoTableId], references: [id])
+  detailsId     Int          @id @default(autoincrement())
+  bingoTableId  Int
+  uploadedBy    String
+  likes         String[]
+  PackDetails   PackDetails? @relation(fields: [packDetailsId], references: [id])
+  packDetailsId Int?
 }
