@@ -3,10 +3,15 @@ import { Hono } from "hono";
 import type { ZodType } from "zod";
 import {
   createTable,
+  createTableDetails,
   findTableById,
   getAllTables,
 } from "./../repository/TableRepository.js";
-import { TableReqSchema, type Table } from "./../types/table.js";
+import {
+  TableReqSchema,
+  type Table,
+  type TableDetails,
+} from "./../types/table.js";
 
 const tables = new Hono();
 
@@ -38,8 +43,9 @@ const defaultJsonValidatorFactory = <T extends ZodType>(schema: T) =>
 
 tables.post("/", defaultJsonValidatorFactory(TableReqSchema), async (c) => {
   const req = c.req.valid("json");
-  const { content, name }: Table = req;
+  const { content, name, likes, submittedBy }: Table & TableDetails = req;
   const newTable = await createTable(content, name);
+  const newDetails = await createTableDetails(likes, submittedBy, newTable.id);
   c.status(201);
   return c.text(`Finished with id ${newTable.id}`);
 });

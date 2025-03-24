@@ -21,8 +21,17 @@ datasource db {
 }
 
 model BingoTable {
-  id      Int    @id @default(autoincrement())
-  code    String @unique @default(uuid())
-  name    String @default("A cool table!")
-  content String
+  id           Int            @id @default(autoincrement())
+  code         String         @unique @default(uuid())
+  name         String         @default("A cool table!")
+  content      String
+  tableDetails TableDetails[]
+}
+
+model TableDetails {
+  table        BingoTable @relation(fields: [bingoTableId], references: [id])
+  detailsId    Int        @id @default(autoincrement())
+  bingoTableId Int
+  uploadedBy   String
+  likes        String[]
 }

@@ -7,12 +7,14 @@ export interface Table {
 
 //Potential extension of the table. Export when applicable.
 
-interface TableRatings {
-  likes: number;
-  submittedBy: string; //Actually this is a Username
+export interface TableDetails {
+  likes: string[];
+  submittedBy: string;
 }
 
 export const TableReqSchema = z.object({
   content: z.string(),
   name: z.string(),
+  submittedBy: z.string(),
+  likes: z.array(z.string()),
 });

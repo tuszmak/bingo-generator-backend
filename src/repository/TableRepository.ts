@@ -17,6 +17,22 @@ export async function createTable(content: string, name: string) {
     .executeTakeFirstOrThrow();
 }
 
+export async function createTableDetails(
+  likes: string[],
+  uploadedBy: string,
+  bingoTableId: number
+) {
+  return await db
+    .insertInto("TableDetails")
+    .values({
+      likes,
+      uploadedBy,
+      bingoTableId,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+}
+
 export async function getAllTables() {
   return await db.selectFrom("BingoTable").selectAll().execute();
 }
