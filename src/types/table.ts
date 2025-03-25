@@ -18,3 +18,9 @@ export const TableReqSchema = z.object({
   submittedBy: z.string(),
   likes: z.array(z.string()),
 });
+
+export const LikeReqSchema = z.object({
+  email: z.string(),
+  state: z.boolean(),
+  packName: z.string(),
+});
