@@ -29,10 +29,26 @@ model BingoTable {
 }
 
 model PackDetails {
-  table         BingoTable @relation(fields: [bingoTableId], references: [id])
-  packDetailsId Int        @id @default(autoincrement())
-  bingoTableId  Int        @unique
-  uploadedBy    String
-  likes         String[]
-  createdAt     DateTime   @default(now())
+  table            BingoTable     @relation(fields: [bingoTableId], references: [id])
+  packDetailsId    Int            @id @default(autoincrement())
+  bingoTableId     Int            @unique
+  uploadedBy       DBUser         @relation(fields: [uploadedByUserId], references: [userId])
+  uploadedByUserId String
+  likes            LikesOnPacks[]
+  createdAt        DateTime       @default(now())
+}
+
+model DBUser {
+  userId      String         @id @unique
+  likedPacks  LikesOnPacks[]
+  PackDetails PackDetails[]
+}
+
+model LikesOnPacks {
+  user   DBUser      @relation(fields: [userId], references: [userId])
+  userId String
+  pack   PackDetails @relation(fields: [packId], references: [packDetailsId])
+  packId Int
+
+  @@id([packId, userId])
 }

@@ -1,3 +1,4 @@
+import { clerkMiddleware } from "@hono/clerk-auth";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import type { ZodType } from "zod";
@@ -20,6 +21,7 @@ import {
 } from "./../types/table.js";
 
 const tables = new Hono();
+tables.use("*", clerkMiddleware());
 
 tables.get("/", async (c) => {
   const tables = await getAllTables();
@@ -49,40 +51,36 @@ const defaultJsonValidatorFactory = <T extends ZodType>(schema: T) =>
 
 tables.post("/", defaultJsonValidatorFactory(TableReqSchema), async (c) => {
   const req = c.req.valid("json");
-  const { content, name, likes, submittedBy }: Table & TableDetails = req;
+  const { content, name, uploadedByUserId }: Table & TableDetails = req;
   const newTable = await createTable(content, name);
-  const newDetails = await createTableDetails(likes, submittedBy, newTable.id);
+  const newDetails = await createTableDetails(uploadedByUserId, newTable.id);
   c.status(201);
   return c.text(`Finished with id ${newTable.id}`);
 });
 
-tables.post(
-  "/like",
-  defaultJsonValidatorFactory(LikeReqSchema),
-  async (c, next) => {
-    const { email, packName, state } = c.req.valid("json");
-    try {
-      await likeTable(email, packName, state);
-      if (!state) {
-        return c.text(
-          `Finished updating ${packName} with removing ${email} from the like list`
-        );
-      }
-      return c.text(
-        `Finished updating ${packName} with adding ${email} to the like list`
-      );
-    } catch (error: unknown) {
-      console.log(error);
+tables.post("/like", defaultJsonValidatorFactory(LikeReqSchema), async (c) => {
+  console.log(c);
 
-      if (error instanceof NoTableFoundError) {
-        return c.text(`No table found with name ${packName}`, 404);
-      }
-      if (error instanceof NoDetailsFoundError) {
-        return c.text(`No details found for table named ${packName}`, 404);
-      }
-      return c.text(`Foobar`, 404);
+  const { userId, packId, state } = c.req.valid("json");
+  try {
+    await likeTable(userId, packId, state);
+    if (!state) {
+      return c.text(
+        `Finished updating ${packId} with removing ${userId} from the like list`
+      );
     }
+    return c.text(
+      `Finished updating ${packId} with adding ${userId} to the like list`
+    );
+  } catch (error: unknown) {
+    if (error instanceof NoTableFoundError) {
+      return c.text(`No table found with name ${packId}`, 404);
+    }
+    if (error instanceof NoDetailsFoundError) {
+      return c.text(`No details found for table named ${packId}`, 404);
+    }
+    return c.text(`Foobar`, 404);
   }
-);
+});
 
 export default tables;

@@ -1,9 +1,5 @@
 import { randomUUID } from "crypto";
 import { db } from "../database.js";
-import {
-  NoDetailsFoundError,
-  NoTableFoundError,
-} from "../errors/likeErrors.js";
 
 export async function findTableById(id: string) {
   return await db
@@ -24,15 +20,13 @@ export async function createTable(content: string, name: string) {
 }
 
 export async function createTableDetails(
-  likes: string[],
-  uploadedBy: string,
+  uploadedByUserId: string,
   bingoTableId: number
 ) {
   return await db
     .insertInto("PackDetails")
     .values({
-      likes,
-      uploadedBy,
+      uploadedByUserId,
       bingoTableId,
     })
     .returningAll()
@@ -48,38 +42,25 @@ export async function getAllTables() {
 }
 
 export async function likeTable(
-  username: string,
-  packName: string,
+  userId: string,
+  packId: number,
   state: boolean
 ) {
-  const table = await db
-    .selectFrom("BingoTable")
-    .where("BingoTable.name", "=", packName)
-    .selectAll()
-    .executeTakeFirstOrThrow(
-      () => new NoTableFoundError(`No table named ${packName}`)
-    );
-
-  const detailsToBeModified = await db
-    .selectFrom("PackDetails")
-    .where("PackDetails.bingoTableId", "=", table.id)
-    .selectAll()
-    .executeTakeFirstOrThrow(
-      () => new NoDetailsFoundError(`No details found for table ${table.name}`)
-    );
-
-  const newLikesArray = [...detailsToBeModified.likes];
   if (!state) {
-    newLikesArray.splice(newLikesArray.findIndex((name) => name === username));
+    await db
+      .deleteFrom("LikesOnPacks")
+      .where("userId", "==", userId)
+      .where("packId", "==", packId)
+      .executeTakeFirstOrThrow();
   } else {
-    newLikesArray.push(username);
+    await db
+      .insertInto("LikesOnPacks")
+      .values({
+        packId: packId,
+        userId: userId,
+      })
+      .executeTakeFirstOrThrow(
+        () => new Error("Something went wrong with adding a like")
+      );
   }
-
-  return await db
-    .updateTable("PackDetails")
-    .set({
-      likes: newLikesArray,
-    })
-    .where("packDetailsId", "=", detailsToBeModified.packDetailsId)
-    .executeTakeFirstOrThrow();
 }
