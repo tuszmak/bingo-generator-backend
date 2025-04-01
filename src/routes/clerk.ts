@@ -58,7 +58,11 @@ clerk.post("/", async (c) => {
     handleUser(evt.data, evt.timestamp, evt.type);
   }
 
-  return c.text("Foo");
+  return c.text(
+    `Somehow an event went through the security check, without it having anything.
+     Please contact the developer`,
+    418
+  );
 });
 
 export default clerk;

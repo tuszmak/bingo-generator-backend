@@ -81,7 +81,6 @@ tables.post("/like", async (c) => {
     if (error instanceof Error) {
       return c.text(error.message, 400);
     }
-    return c.text(`Foobar`, 404);
   }
 });
 
