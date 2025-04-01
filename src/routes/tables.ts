@@ -58,10 +58,9 @@ tables.post("/", defaultJsonValidatorFactory(TableReqSchema), async (c) => {
   return c.text(`Finished with id ${newTable.id}`);
 });
 
-tables.post("/like", defaultJsonValidatorFactory(LikeReqSchema), async (c) => {
-  console.log(c);
-
-  const { userId, packId, state } = c.req.valid("json");
+tables.post("/like", async (c) => {
+  const request = await c.req.json();
+  const { userId, packId, state } = LikeReqSchema.parse(request);
   try {
     await likeTable(userId, packId, state);
     if (!state) {
@@ -74,10 +73,13 @@ tables.post("/like", defaultJsonValidatorFactory(LikeReqSchema), async (c) => {
     );
   } catch (error: unknown) {
     if (error instanceof NoTableFoundError) {
-      return c.text(`No table found with name ${packId}`, 404);
+      return c.text(`No table found with name ${packId}`, 400);
     }
     if (error instanceof NoDetailsFoundError) {
-      return c.text(`No details found for table named ${packId}`, 404);
+      return c.text(`No details found for table named ${packId}`, 400);
+    }
+    if (error instanceof Error) {
+      return c.text(error.message, 400);
     }
     return c.text(`Foobar`, 404);
   }

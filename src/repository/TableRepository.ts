@@ -49,8 +49,8 @@ export async function likeTable(
   if (!state) {
     await db
       .deleteFrom("LikesOnPacks")
-      .where("userId", "==", userId)
-      .where("packId", "==", packId)
+      .where("userId", "=", userId)
+      .where("packId", "=", packId)
       .executeTakeFirstOrThrow();
   } else {
     await db
