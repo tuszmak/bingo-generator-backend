@@ -20,15 +20,13 @@ export async function createTable(content: string, name: string) {
 }
 
 export async function createTableDetails(
-  likes: string[],
-  uploadedBy: string,
+  uploadedByUserId: string,
   bingoTableId: number
 ) {
   return await db
     .insertInto("PackDetails")
     .values({
-      likes,
-      uploadedBy,
+      uploadedByUserId,
       bingoTableId,
     })
     .returningAll()
@@ -41,4 +39,28 @@ export async function getAllTables() {
     .selectAll()
     .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
     .execute();
+}
+
+export async function likeTable(
+  userId: string,
+  packId: number,
+  state: boolean
+) {
+  if (!state) {
+    await db
+      .deleteFrom("LikesOnPacks")
+      .where("userId", "=", userId)
+      .where("packId", "=", packId)
+      .executeTakeFirstOrThrow();
+  } else {
+    await db
+      .insertInto("LikesOnPacks")
+      .values({
+        packId: packId,
+        userId: userId,
+      })
+      .executeTakeFirstOrThrow(
+        () => new Error("Something went wrong with adding a like")
+      );
+  }
 }
