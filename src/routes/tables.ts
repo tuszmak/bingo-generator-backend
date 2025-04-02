@@ -6,6 +6,7 @@ import {
   NoDetailsFoundError,
   NoTableFoundError,
 } from "../errors/likeErrors.js";
+import { mergeTableData } from "../service/tableService.js";
 import {
   createTable,
   createTableDetails,
@@ -25,8 +26,11 @@ tables.use("*", clerkMiddleware());
 
 tables.get("/", async (c) => {
   const tables = await getAllTables();
+  const tablesWithLikes = await Promise.all(
+    tables.map((table) => mergeTableData(table))
+  );
   if (tables) {
-    return c.body(JSON.stringify(tables));
+    return c.body(JSON.stringify(tablesWithLikes));
   }
 });
 
@@ -35,7 +39,8 @@ tables.get("/:id", async (c) => {
   if (id) {
     const table = await findTableById(id);
     if (table) {
-      return c.body(JSON.stringify(table));
+      const responseData = await mergeTableData(table);
+      return c.body(JSON.stringify(responseData));
     } else {
       return c.notFound();
     }

@@ -7,7 +7,7 @@ export async function findTableById(id: string) {
     .where("code", "=", id)
     .selectAll()
     .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 }
 
 export async function createTable(content: string, name: string) {
@@ -63,4 +63,14 @@ export async function likeTable(
         () => new Error("Something went wrong with adding a like")
       );
   }
+}
+
+export async function getLikeCountOnTable(packId: number) {
+  return await db
+    .selectFrom("LikesOnPacks")
+    .select(({ fn }) => [
+      fn.count<number>("LikesOnPacks.userId").as("likeCount"),
+    ])
+    .where("LikesOnPacks.packId", "=", packId)
+    .executeTakeFirstOrThrow();
 }
