@@ -22,5 +22,7 @@ async function createUser(user: User) {
 }
 
 export const getUser = async (userId: string) => {
-  return await getUserFromDb(userId);
+  const user = await getUserFromDb(userId);
+  const packIds = user.likedPacks.map((pack) => pack.packId);
+  return { userId: user.user.userId, packIds };
 };
