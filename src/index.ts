@@ -3,12 +3,14 @@ import dotenvFlow from "dotenv-flow";
 import { Hono } from "hono";
 import clerk from "./routes/clerk.js";
 import tables from "./routes/tables.js";
+import users from "./routes/users.js";
 
 dotenvFlow.config();
 const app = new Hono()
   .basePath("/api/v1/")
   .route("/table", tables)
-  .route("/clerk", clerk);
+  .route("/clerk", clerk)
+  .route("/users", users);
 
 const port = 3000;
 console.log(`Server is running on http://localhost:${port}`);
