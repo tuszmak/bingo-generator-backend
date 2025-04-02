@@ -1,15 +1,17 @@
-export class NoTableFoundError extends Error {
+import { NotFoundError } from "./errors.js";
+
+export class TableNotFoundError extends NotFoundError {
   constructor(message: string) {
     super(message);
-    this.name = "NoTableFoundError";
-    Object.setPrototypeOf(this, NoTableFoundError.prototype);
+    this.name = "TableNotFoundError";
+    Object.setPrototypeOf(this, TableNotFoundError.prototype);
   }
 }
 
-export class NoDetailsFoundError extends Error {
+export class DetailsNotFoundError extends NotFoundError {
   constructor(message: string) {
     super(message);
-    this.name = "NoDetailsFoundError";
-    Object.setPrototypeOf(this, NoDetailsFoundError.prototype);
+    this.name = "DetailsNotFoundError";
+    Object.setPrototypeOf(this, DetailsNotFoundError.prototype);
   }
 }
