@@ -3,9 +3,10 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import type { ZodType } from "zod";
 import {
-  NoDetailsFoundError,
-  NoTableFoundError,
+  DetailsNotFoundError,
+  TableNotFoundError,
 } from "../errors/likeErrors.js";
+import { mergeTableData } from "../service/tableService.js";
 import {
   createTable,
   createTableDetails,
@@ -25,17 +26,21 @@ tables.use("*", clerkMiddleware());
 
 tables.get("/", async (c) => {
   const tables = await getAllTables();
+  const tablesWithLikes = await Promise.all(
+    tables.map((table) => mergeTableData(table))
+  );
   if (tables) {
-    return c.body(JSON.stringify(tables));
+    return c.body(JSON.stringify(tablesWithLikes));
   }
 });
 
-tables.get("/:id", async (c) => {
+tables.get("/:userId", async (c) => {
   const id = c.req.param("id");
   if (id) {
     const table = await findTableById(id);
     if (table) {
-      return c.body(JSON.stringify(table));
+      const responseData = await mergeTableData(table);
+      return c.body(JSON.stringify(responseData));
     } else {
       return c.notFound();
     }
@@ -72,10 +77,10 @@ tables.post("/like", async (c) => {
       `Finished updating ${packId} with adding ${userId} to the like list`
     );
   } catch (error: unknown) {
-    if (error instanceof NoTableFoundError) {
+    if (error instanceof TableNotFoundError) {
       return c.text(`No table found with name ${packId}`, 400);
     }
-    if (error instanceof NoDetailsFoundError) {
+    if (error instanceof DetailsNotFoundError) {
       return c.text(`No details found for table named ${packId}`, 400);
     }
     if (error instanceof Error) {

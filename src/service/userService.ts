@@ -1,5 +1,5 @@
 import type { User } from "@clerk/backend";
-import { createUserToDb } from "../repository/UserRepository.js";
+import { createUserToDb, getUserFromDb } from "../repository/UserRepository.js";
 import type { EventType } from "../types/user.js";
 
 export const handleUser = (user: User, timestamp: number, type: EventType) => {
@@ -20,3 +20,9 @@ async function createUser(user: User) {
   const userFromDb = await createUserToDb(user);
   return `User created with id ${userFromDb.insertId}`;
 }
+
+export const getUser = async (userId: string) => {
+  const user = await getUserFromDb(userId);
+  const packIds = user.likedPacks.map((pack) => pack.packId);
+  return { userId: user.user.userId, packIds };
+};
