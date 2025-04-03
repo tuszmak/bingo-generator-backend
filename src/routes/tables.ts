@@ -34,17 +34,18 @@ tables.get("/", async (c) => {
   }
 });
 
-tables.get("/:userId", async (c) => {
-  const id = c.req.param("id");
+tables.get("/:tableID", async (c) => {
+  const id = c.req.param("tableID");
   if (id) {
     const table = await findTableById(id);
     if (table) {
       const responseData = await mergeTableData(table);
-      return c.body(JSON.stringify(responseData));
+      return c.body(JSON.stringify(responseData), 200);
     } else {
       return c.notFound();
     }
   }
+  return c.text("Table ID is required", 400);
 });
 
 const defaultJsonValidatorFactory = <T extends ZodType>(schema: T) =>

@@ -1,14 +1,38 @@
 import { randomUUID } from "crypto";
 import { db } from "../database.js";
+import type { TableInDB } from "../types/table.js";
 
-export async function findTableById(id: string) {
-  return await db
-    .selectFrom("BingoTable")
-    .where("code", "=", id)
-    .selectAll()
-    .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
-    .executeTakeFirstOrThrow();
+export async function findTableById(searchQuery: string): Promise<TableInDB>;
+export async function findTableById(
+  searchQuery: string[]
+): Promise<TableInDB[]>;
+
+export async function findTableById(searchQuery: string | string[]) {
+  if (typeof searchQuery === "string") {
+    return await db
+      .selectFrom("BingoTable")
+      .where("code", "=", searchQuery)
+      .selectAll()
+      .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
+      .executeTakeFirstOrThrow();
+  } else {
+    return await db
+      .selectFrom("BingoTable")
+      .where("code", "in", searchQuery)
+      .selectAll()
+      .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
+      .execute();
+  }
 }
+
+// export async function findTableById(id: string) {
+//   return await db
+//     .selectFrom("BingoTable")
+//     .where("code", "=", id)
+//     .selectAll()
+//     .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
+//     .executeTakeFirstOrThrow();
+// }
 
 export async function createTable(content: string, name: string) {
   const table = await db
