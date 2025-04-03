@@ -1,13 +1,27 @@
 import { randomUUID } from "crypto";
 import { db } from "../database.js";
+import type { TableInDB } from "../types/table.js";
 
-export async function findTableById(id: string) {
+export async function findTableById(searchQuery: string): Promise<TableInDB>;
+export async function findTableById(
+  searchQuery: string[]
+): Promise<TableInDB[]>;
+
+export async function findTableById(searchQuery: string | string[]) {
+  if (typeof searchQuery === "string") {
+    return await db
+      .selectFrom("BingoTable")
+      .where("code", "=", searchQuery)
+      .selectAll()
+      .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
+      .executeTakeFirstOrThrow();
+  }
   return await db
     .selectFrom("BingoTable")
-    .where("code", "=", id)
+    .where("code", "in", searchQuery)
     .selectAll()
     .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
-    .executeTakeFirstOrThrow();
+    .execute();
 }
 
 export async function createTable(content: string, name: string) {

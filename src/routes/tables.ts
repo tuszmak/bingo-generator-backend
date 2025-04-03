@@ -34,8 +34,8 @@ tables.get("/", async (c) => {
   }
 });
 
-tables.get("/:userId", async (c) => {
-  const id = c.req.param("id");
+tables.get("/:tableID", async (c) => {
+  const id = c.req.param("tableID");
   if (id) {
     const table = await findTableById(id);
     if (table) {
@@ -45,6 +45,7 @@ tables.get("/:userId", async (c) => {
       return c.notFound();
     }
   }
+  return c.text("Table ID is required", 400);
 });
 
 const defaultJsonValidatorFactory = <T extends ZodType>(schema: T) =>

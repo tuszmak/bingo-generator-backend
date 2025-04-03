@@ -24,3 +24,10 @@ export const LikeReqSchema = z.object({
   state: z.boolean(),
   packId: z.number(),
 });
+
+export interface TableInDB {
+  code: string;
+  id: number;
+  name: string;
+  content: string;
+}
