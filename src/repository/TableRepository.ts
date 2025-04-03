@@ -15,24 +15,14 @@ export async function findTableById(searchQuery: string | string[]) {
       .selectAll()
       .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
       .executeTakeFirstOrThrow();
-  } else {
-    return await db
-      .selectFrom("BingoTable")
-      .where("code", "in", searchQuery)
-      .selectAll()
-      .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
-      .execute();
   }
+  return await db
+    .selectFrom("BingoTable")
+    .where("code", "in", searchQuery)
+    .selectAll()
+    .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
+    .execute();
 }
-
-// export async function findTableById(id: string) {
-//   return await db
-//     .selectFrom("BingoTable")
-//     .where("code", "=", id)
-//     .selectAll()
-//     .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
-//     .executeTakeFirstOrThrow();
-// }
 
 export async function createTable(content: string, name: string) {
   const table = await db
