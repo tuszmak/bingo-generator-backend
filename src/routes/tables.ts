@@ -40,7 +40,7 @@ tables.get("/:tableID", async (c) => {
     const table = await findTableById(id);
     if (table) {
       const responseData = await mergeTableData(table);
-      return c.body(JSON.stringify(responseData), 200);
+      return c.body(JSON.stringify(responseData));
     } else {
       return c.notFound();
     }
