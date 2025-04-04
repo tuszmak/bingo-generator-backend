@@ -36,8 +36,12 @@ tables.get("/", async (c) => {
 
 tables.get("/:tableID", async (c) => {
   const id = c.req.param("tableID");
-  if (id) {
-    const table = await findTableById(id);
+  const idAsNumber = parseInt(id);
+  if (isNaN(idAsNumber)) {
+    return c.text("This id is not a number", 400);
+  }
+  if (idAsNumber) {
+    const table = await findTableById(idAsNumber);
     if (table) {
       const responseData = await mergeTableData(table);
       return c.body(JSON.stringify(responseData));
