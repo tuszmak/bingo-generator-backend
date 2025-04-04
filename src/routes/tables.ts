@@ -16,6 +16,7 @@ import {
 } from "./../repository/TableRepository.js";
 import {
   LikeReqSchema,
+  TableIdList,
   TableReqSchema,
   type Table,
   type TableDetails,
@@ -36,8 +37,12 @@ tables.get("/", async (c) => {
 
 tables.get("/:tableID", async (c) => {
   const id = c.req.param("tableID");
-  if (id) {
-    const table = await findTableById(id);
+  const idAsNumber = parseInt(id);
+  if (isNaN(idAsNumber)) {
+    return c.text("This id is not a number", 400);
+  }
+  if (idAsNumber) {
+    const table = await findTableById(idAsNumber);
     if (table) {
       const responseData = await mergeTableData(table);
       return c.body(JSON.stringify(responseData));
@@ -88,6 +93,16 @@ tables.post("/like", async (c) => {
       return c.text(error.message, 400);
     }
   }
+});
+
+tables.post("/getTables", async (c) => {
+  const ids = await c.req.json();
+  const vaildatedIds = TableIdList.parse(ids);
+  const tables = await findTableById(vaildatedIds);
+  const tablesWithLikes = await Promise.all(
+    tables.map((table) => mergeTableData(table))
+  );
+  return c.json(tablesWithLikes);
 });
 
 export default tables;
