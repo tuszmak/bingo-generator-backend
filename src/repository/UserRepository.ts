@@ -1,8 +1,8 @@
-import type { User } from "@clerk/backend";
+import type { UserJSON } from "@clerk/backend";
 import { db } from "../database.js";
 import { UserNotFoundError } from "../errors/userErrors.js";
 
-export async function createUserToDb(user: User) {
+export async function createUserToDb(user: UserJSON) {
   return await db
     .insertInto("DBUser")
     .values({

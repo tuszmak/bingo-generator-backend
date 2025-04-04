@@ -1,4 +1,4 @@
-import type { User } from "@clerk/backend";
+import type { WebhookEvent } from "@clerk/backend";
 import { clerkMiddleware } from "@hono/clerk-auth";
 import { Hono } from "hono";
 import { Webhook, WebhookVerificationError } from "svix";
@@ -31,7 +31,7 @@ clerk.post("/", async (c) => {
 
   const payload = await c.req.json();
 
-  let evt;
+  let evt: WebhookEvent;
 
   // Attempt to verify the incoming webhook
   // If successful, the payload will be available from 'evt'
@@ -41,7 +41,7 @@ clerk.post("/", async (c) => {
       "svix-id": svix_id as string,
       "svix-timestamp": svix_timestamp as string,
       "svix-signature": svix_signature as string,
-    }) as ClerkWebhookPayload<User>;
+    }) as WebhookEvent;
     console.log(evt);
   } catch (err) {
     if (err instanceof WebhookVerificationError) {
@@ -53,9 +53,15 @@ clerk.post("/", async (c) => {
         message: err.message,
       });
     }
+    return c.json({
+      success: false,
+      message: "Unknown error",
+    });
   }
   if (evt) {
-    handleUser(evt.data, evt.timestamp, evt.type);
+    evt;
+    const responseMessage = await handleUser(evt);
+    return c.text(responseMessage ?? "", 201);
   }
 
   return c.text(
