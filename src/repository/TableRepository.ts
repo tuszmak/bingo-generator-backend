@@ -2,23 +2,23 @@ import { randomUUID } from "crypto";
 import { db } from "../database.js";
 import type { TableInDB } from "../types/table.js";
 
-export async function findTableById(searchQuery: string): Promise<TableInDB>;
+export async function findTableById(searchQuery: number): Promise<TableInDB>;
 export async function findTableById(
-  searchQuery: string[]
+  searchQuery: number[]
 ): Promise<TableInDB[]>;
 
-export async function findTableById(searchQuery: string | string[]) {
-  if (typeof searchQuery === "string") {
+export async function findTableById(searchQuery: number | number[]) {
+  if (typeof searchQuery === "number") {
     return await db
       .selectFrom("BingoTable")
-      .where("code", "=", searchQuery)
+      .where("id", "=", searchQuery)
       .selectAll()
       .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
       .executeTakeFirstOrThrow();
   }
   return await db
     .selectFrom("BingoTable")
-    .where("code", "in", searchQuery)
+    .where("id", "in", searchQuery)
     .selectAll()
     .fullJoin("PackDetails", "BingoTable.id", "PackDetails.bingoTableId")
     .execute();

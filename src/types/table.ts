@@ -25,6 +25,8 @@ export const LikeReqSchema = z.object({
   packId: z.number(),
 });
 
+export const TableIdList = z.array(z.number());
+
 export interface TableInDB {
   code: string;
   id: number;

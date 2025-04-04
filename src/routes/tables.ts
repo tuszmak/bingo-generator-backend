@@ -16,6 +16,7 @@ import {
 } from "./../repository/TableRepository.js";
 import {
   LikeReqSchema,
+  TableIdList,
   TableReqSchema,
   type Table,
   type TableDetails,
@@ -93,5 +94,15 @@ tables.post("/like", async (c) => {
     }
   }
 });
+
+tables.post(
+  "/getTables",
+  defaultJsonValidatorFactory(TableIdList),
+  async (c) => {
+    const ids = c.req.valid("json");
+    const tables = await findTableById(ids);
+    return c.json(tables);
+  }
+);
 
 export default tables;
