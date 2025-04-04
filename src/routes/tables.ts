@@ -95,14 +95,14 @@ tables.post("/like", async (c) => {
   }
 });
 
-tables.post(
-  "/getTables",
-  defaultJsonValidatorFactory(TableIdList),
-  async (c) => {
-    const ids = c.req.valid("json");
-    const tables = await findTableById(ids);
-    return c.json(tables);
-  }
-);
+tables.post("/getTables", async (c) => {
+  const ids = await c.req.json();
+  const vaildatedIds = TableIdList.parse(ids);
+  const tables = await findTableById(vaildatedIds);
+  const tablesWithLikes = await Promise.all(
+    tables.map((table) => mergeTableData(table))
+  );
+  return c.json(tablesWithLikes);
+});
 
 export default tables;
