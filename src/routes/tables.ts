@@ -10,6 +10,7 @@ import { mergeTableData } from "../service/tableService.js";
 import {
   createTable,
   createTableDetails,
+  deleteTable,
   findTableById,
   getAllTables,
   likeTable,
@@ -121,5 +122,15 @@ tables.patch(
     return c.text("Success!", 200);
   }
 );
+
+tables.delete("/:tableID", async (c) => {
+  const tableID = c.req.param("tableID");
+  const idAsNumber = parseInt(tableID);
+  if (isNaN(idAsNumber)) {
+    return c.text("This id is not a number", 400);
+  }
+  deleteTable(idAsNumber);
+  return c.text("Success!", 200);
+});
 
 export default tables;
