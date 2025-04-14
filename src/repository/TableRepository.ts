@@ -88,3 +88,29 @@ export async function getLikeCountOnTable(packId: number) {
     .where("LikesOnPacks.packId", "=", packId)
     .executeTakeFirstOrThrow();
 }
+
+export async function modifyTable(
+  packId: number,
+  packName?: string,
+  content?: string
+) {
+  if (packName) {
+    await db
+      .updateTable("BingoTable")
+      .set({
+        name: packName,
+      })
+      .where("BingoTable.id", "=", packId)
+      .execute();
+  }
+  if (content) {
+    await db
+      .updateTable("BingoTable")
+      .set({
+        content: content,
+      })
+      .where("BingoTable.id", "=", packId)
+      .execute();
+  }
+  return;
+}

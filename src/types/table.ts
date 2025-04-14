@@ -33,3 +33,8 @@ export interface TableInDB {
   name: string;
   content: string;
 }
+
+export const ModifyTableSchema = z.object({
+  name: z.string().optional(),
+  content: z.string().optional(),
+});

@@ -13,9 +13,11 @@ import {
   findTableById,
   getAllTables,
   likeTable,
+  modifyTable,
 } from "./../repository/TableRepository.js";
 import {
   LikeReqSchema,
+  ModifyTableSchema,
   TableIdList,
   TableReqSchema,
   type Table,
@@ -104,5 +106,20 @@ tables.post("/getTables", async (c) => {
   );
   return c.json(tablesWithLikes);
 });
+
+tables.patch(
+  "/:tableID",
+  defaultJsonValidatorFactory(ModifyTableSchema),
+  async (c) => {
+    const tableID = c.req.param("tableID");
+    const idAsNumber = parseInt(tableID);
+    if (isNaN(idAsNumber)) {
+      return c.text("This id is not a number", 400);
+    }
+    const { content, name } = c.req.valid("json");
+    modifyTable(idAsNumber, content, name);
+    return c.text("Success!", 200);
+  }
+);
 
 export default tables;
