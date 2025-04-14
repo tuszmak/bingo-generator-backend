@@ -114,3 +114,20 @@ export async function modifyTable(
   }
   return;
 }
+
+export async function deleteTable(packId: number) {
+  await db
+    .deleteFrom("LikesOnPacks")
+    .where("LikesOnPacks.packId", "=", packId)
+    .execute();
+  await db
+    .deleteFrom("PackDetails")
+    .where("PackDetails.bingoTableId", "=", packId)
+    .execute();
+  await db
+    .deleteFrom("BingoTable")
+    .where("id", "=", packId)
+    .executeTakeFirstOrThrow();
+
+  return;
+}
