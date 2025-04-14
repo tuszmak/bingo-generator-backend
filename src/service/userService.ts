@@ -1,12 +1,10 @@
-import type { User } from "@clerk/backend";
+import type { UserJSON, WebhookEvent } from "@clerk/backend";
 import { createUserToDb, getUserFromDb } from "../repository/UserRepository.js";
-import type { EventType } from "../types/user.js";
 
-export const handleUser = (user: User, timestamp: number, type: EventType) => {
-  switch (type) {
+export const handleUser = (event: WebhookEvent) => {
+  switch (event.type) {
     case "user.created":
-      createUser(user);
-      break;
+      return createUser(event.data);
     case "user.updated":
       break;
     case "user.deleted":
@@ -16,7 +14,7 @@ export const handleUser = (user: User, timestamp: number, type: EventType) => {
   }
 };
 
-async function createUser(user: User) {
+async function createUser(user: UserJSON) {
   const userFromDb = await createUserToDb(user);
   return `User created with id ${userFromDb.insertId}`;
 }
