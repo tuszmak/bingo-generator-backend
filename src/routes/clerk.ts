@@ -56,6 +56,7 @@ clerk.post("/", async (c) => {
   }
   if (evt) {
     handleUser(evt.data, evt.timestamp, evt.type);
+    return c.text("ok", 200);
   }
 
   return c.text(
