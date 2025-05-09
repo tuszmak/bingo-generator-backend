@@ -1,3 +1,4 @@
+import { createClerkClient } from "@clerk/backend";
 import { serve } from "@hono/node-server";
 import dotenvFlow from "dotenv-flow";
 import { Hono } from "hono";
@@ -6,6 +7,10 @@ import tables from "./routes/tables.js";
 import users from "./routes/users.js";
 
 dotenvFlow.config();
+export const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+});
+
 const app = new Hono()
   .basePath("/api/v1/")
   .route("/table", tables)
