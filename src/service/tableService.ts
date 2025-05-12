@@ -8,8 +8,9 @@ interface Table {
 
 export async function mergeTableData(table: Table) {
   const likeCount = await getLikeCountOnTable(table.id);
+  const likeCountAsNumber = parseInt(likeCount.likeCount.toString());
   return {
     ...table,
-    likeCount: likeCount.likeCount,
+    likeCount: likeCountAsNumber,
   };
 }
