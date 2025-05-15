@@ -2,6 +2,7 @@ import type { User } from "@clerk/backend";
 import {
   createUserToDb,
   deleteUser,
+  deleteUserFromDb,
   getUserFromDb,
   modifyUser,
 } from "../repository/UserRepository.js";
@@ -15,6 +16,7 @@ export const handleUser = (user: User, timestamp: number, type: EventType) => {
     case "user.updated":
       break;
     case "user.deleted":
+      deleteUserFromDb(user.id);
       break;
     default:
       break;

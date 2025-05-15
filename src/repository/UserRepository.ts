@@ -59,3 +59,20 @@ export const modifyUser = async (
 export const deleteUser = async (userId: string) => {
   await clerkClient.users.deleteUser(userId);
 };
+
+export const deleteUserFromDb = async (userId: string) => {
+  await db
+    .deleteFrom("PackDetails")
+    .where("PackDetails.uploadedByUserId", "=", userId)
+    .execute();
+  await db
+    .deleteFrom("LikesOnPacks")
+    .where("LikesOnPacks.userId", "=", userId)
+    .execute();
+  await db
+    .deleteFrom("DBUser")
+    .where("userId", "=", userId)
+    .executeTakeFirstOrThrow(
+      () => new UserNotFoundError(`No user found with id: ${userId}`)
+    );
+};
